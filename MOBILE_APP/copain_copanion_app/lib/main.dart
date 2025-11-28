@@ -1,11 +1,29 @@
-import 'package:copain_copanion_app/screens/play_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'screens/copain_screen.dart';
 
+import 'package:copain_copanion_app/screens/copain_screen.dart';
+import 'package:copain_copanion_app/screens/play_screen.dart';
+import 'package:copain_copanion_app/screens/create_screen.dart';
 
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:copain_copanion_app/models/global_singletons/hive_boxes.dart';
+import 'package:copain_copanion_app/models/copain/copain.dart';
+import 'package:copain_copanion_app/models/user/user.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Hive
+  await Hive.initFlutter();
+
+  //register adapters
+  Hive.registerAdapter(UserAdapter());
+  Hive.registerAdapter(CopainAdapter());
+
+  boxUsers   = await Hive.openBox<User>('boxUsers');
+  boxCopains = await Hive.openBox<Copain>('boxCopains');
+
+
   runApp(CopainCompanionApp());
 }
 
@@ -46,7 +64,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   final List<Widget> _widgetOptions = [
     PlayScreen(),
     CopainScreen(),
-    PlayScreen(),
+    CreateScreen(),
   ];
 
   void _onItemTapped(int index) {
